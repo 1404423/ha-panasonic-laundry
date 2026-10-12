@@ -2,7 +2,8 @@
 
 The app's Auth0 client only accepts its own custom redirect URI (auth0://...), so the browser ends on a
 page it cannot open. The authorization code is then copied from the browser's developer tools by hand.
-The same form is used for the first setup and for re-authentication.
+The same form is used for the first setup and for re-authentication. The manual "paste the redirect URL" login follows
+https://github.com/specializedken/panasonic-eolia (MIT).
 """
 
 from __future__ import annotations

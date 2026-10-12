@@ -1,13 +1,28 @@
 # Panasonic Washer-Dryer (スマホで洗濯) for Home Assistant
 
-Status, finish-time reservations and a start button for a Panasonic drum washer-dryer that is connected to the Japanese
-**"スマホで洗濯" (Smartphone Laundry)** app:
-state, door, course, stage and time remaining as Home Assistant sensors, the washer's recent history, and **finish-time
-reservations** of courses from that history. You can use them for "laundry is done" notifications, dashboards or automations.
+An **unofficial** Home Assistant custom integration for Panasonic **drum washer-dryers** that are connected to the Japanese
+**"スマホで洗濯" (Smartphone Laundry)** app: status, finish-time reservations of courses from the washer's history, and a start
+button.
 
-> **Unofficial.** This integration is not made, endorsed or supported by Panasonic. It talks to the same cloud API as the official
-> Android app, which was worked out by reading that app. Panasonic can change or block it at any time, and using it may be
-> against the terms of the service. Use it at your own risk and only with your own account and appliance.
+> **Unofficial.** Not made, endorsed or supported by Panasonic. It talks to the same cloud API as the official Android app,
+> which was worked out by reading that app. Panasonic can change or block it at any time, and using it may be against the terms
+> of the service. Use it at your own risk and only with your own account and appliance. See the [disclaimer](#disclaimer).
+
+## Why
+
+The app is the only way to see what the washer is doing from outside the house, and there is no official API, no ECHONET Lite
+on this model and no local interface. This integration brings the same information and the reservation into Home Assistant,
+so that "laundry is done" notifications, dashboards and automations work.
+
+## How this differs from other Panasonic integrations
+
+* [specializedken/panasonic-eolia](https://github.com/specializedken/panasonic-eolia): Panasonic **Eolia air conditioners** (same
+  Club Panasonic login). This project reuses its login approach, see [Acknowledgements](#acknowledgements).
+* [sockless-coding/panasonic_cc](https://github.com/sockless-coding/panasonic_cc): Panasonic **Comfort Cloud** (air conditioners,
+  heat pumps).
+* [tsunglung/panasonic_ems2](https://github.com/tsunglung/panasonic_ems2) and [osk2/panasonic_smart_app](https://github.com/osk2/panasonic_smart_app):
+  the **Panasonic Smart App / IoT** of other regions (Taiwan), including washers. The Japanese washer app is a different service with
+  a different login and API, and none of the projects above supports it.
 
 ## What you get
 
@@ -46,25 +61,22 @@ to start. It is sent as the official app does it (finish time + timer on + cours
   The start command was built from the app's code (`00B2` = `41`) and **has not been tested on a real run**.
 * Changing a course through the cloud on its own is refused by the washer; the course is only sent together with a reservation.
 
-Tested on the real machine: a reservation with the already selected course (sent, read back, cancelled). Reservations of
-*other* courses and washing courses with detergent settings are implemented following the app's code but not all tested yet.
+Tested on the real machine: a reservation with the course that was already selected on the washer (sent, read back, cancelled).
+A reservation of another course (a drying-only one) was refused by the washer; washing courses with detergent settings are built
+from the app's code but have not been tried.
 
-## Tested with
+## Requirements
 
-* NA-LX127CL-W (ななめドラム洗濯乾燥機), Japan, Club Panasonic account: status, reservation of the course that is selected on the
-  washer, cancelling. Not tested on a real run: **Start now**. Refused by this model: reserving or switching to another course
-  through the cloud (tried a drying-only course).
-
-Other models of the same app (NA-LX129/127 series, NA-VG, NA-VX ...) may work; please open an issue with the model number.
+* A Panasonic drum washer-dryer registered in the **スマホで洗濯** app (Club Panasonic account, Japan), with Wi-Fi on.
+* Home Assistant 2025.1 or newer.
+* A desktop browser (for the one-time login).
 
 ## Install
 
 [![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=1404423&repository=ha-panasonic-laundry&category=integration)
 
-HACS: *HACS → ⋮ → Custom repositories* → add `https://github.com/1404423/ha-panasonic-laundry` as type **Integration**, install it, restart Home Assistant.
-Manual: copy `custom_components/panasonic_laundry` to `<config>/custom_components/`.
-
-Requires Home Assistant 2025.1 or newer.
+HACS: *HACS → ⋮ → Custom repositories* → add `https://github.com/1404423/ha-panasonic-laundry` as type **Integration**, install it,
+restart Home Assistant. Manual: copy `custom_components/panasonic_laundry` to `<config>/custom_components/`.
 
 ## Set up (login)
 
@@ -86,6 +98,17 @@ The code is single-use and expires within a minute or so. Your password is never
 * *"Login failed"*: the code expired or was already used; log in again and paste right away.
 * *No washer listed*: register it in the official app first (the app's "My家電" list).
 
+## Limitations
+
+* Tested on one machine only: **NA-LX127CL-W** (ななめドラム洗濯乾燥機, Japan). Other models of the same app (NA-LX129/127 series,
+  NA-VG, NA-VX ...) may work; please open an issue with the model number.
+* Reservations work for the course that is selected on the washer. Reserving another course through the cloud, including a
+  drying-only course, was refused by the washer (see [docs/findings.md](docs/findings.md)).
+* **Start now** has not been tested on a real run. There is no stop button; stop the washer on its panel.
+* The washer must be switched on, waiting, with the door closed and the **遠隔 (remote)** lamp lit for any command.
+* The status is polled every 60 seconds; the cloud sometimes answers "communication with the washer failed" once.
+* The login needs a desktop browser once (and again when Panasonic invalidates the refresh token).
+
 ## Privacy
 
 The integration talks only to Panasonic's servers (`auth.digital.panasonic.com`, `app.wad.apws.panasonic.com`). Your Panasonic ID
@@ -95,14 +118,40 @@ The OAuth client id in `const.py` is the public one of the official app.
 
 ## Development
 
-`ci/validate.yml` is the GitHub Actions workflow (hassfest, HACS validation, unit tests). Copy it to `.github/workflows/validate.yml`
-(pushing workflow files needs a token with the `workflow` permission).
-
-`custom_components/panasonic_laundry/decode.py` and `util.py` have no Home Assistant imports; run the tests with
-
 ```
 cd tests && python3 -m unittest discover -v
 ```
+
+`custom_components/panasonic_laundry/decode.py`, `reservation.py` and `util.py` have no Home Assistant imports and carry the
+unit tests. `tools/probe.py` is a small stdlib-only script that reads the status and builds or sends the same requests from a
+terminal (needs a token file; read its header first). The API notes are in [docs/](docs/README.md).
+
+`ci/*.yaml` are the GitHub Actions workflows (HACS validation, hassfest, unit tests). Copy them to `.github/workflows/` to enable
+them (pushing workflow files needs a token with the `workflow` permission).
+
+## Acknowledgements
+
+* **[specializedken/panasonic-eolia](https://github.com/specializedken/panasonic-eolia)** (MIT): the Auth0 PKCE login with the
+  manual "paste the redirect URL" step, the token refresh class, the config-flow shape, the repository layout and the structure of
+  this README were taken from or modelled on that project. Its copyright notice is in [LICENSE](LICENSE).
+* **The official "スマホで洗濯" Android app by Panasonic**: the API (login, endpoints, status properties, reservation request) was
+  worked out by reading the app. The Japanese course, stage and state names come from the app's own labels. No Panasonic code is
+  included.
+* **[ECHONET Lite](https://echonet.jp/english/)**: the status properties use ECHONET-Lite-style ids, which made the app's tables easier
+  to read.
+* The comparison projects listed above were read for orientation only; no code from them is used.
+* The [Home Assistant developer documentation](https://developers.home-assistant.io/) for the integration structure.
+
+## Disclaimer
+
+This project is not affiliated with, endorsed by or supported by Panasonic. *Panasonic* and *スマホで洗濯* are trademarks or
+product names of their owners and are used only to say which service this integration talks to. It uses the cloud with your own
+account and controls your own appliance; use it at your own risk. The course and stage names are Panasonic's text, taken from the
+app for convenience, and are not covered by this project's license.
+
+## License
+
+The code is released under the [MIT License](LICENSE) (with the notice of the project it was adapted from).
 
 ## 日本語
 
@@ -112,7 +161,3 @@ Home Assistant のセンサーとして読み取ります。**非公式**で、�
 
 ログインは、手動の手順が 1 回必要です(上の「Set up」を参照)。開発者ツールの Console に出る
 `Failed to launch 'auth0://...?code=...'` の行を、丸ごと貼ってください。パスワードは、HA には保存されません。
-
-## License
-
-MIT, see `LICENSE`.

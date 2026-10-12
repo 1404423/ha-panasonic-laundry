@@ -1,5 +1,9 @@
 """Auth0 Authorization Code + PKCE for the Panasonic washer app.
 
+Adapted from the login/token code of https://github.com/specializedken/panasonic-eolia (MIT, Copyright (c) 2026
+specializedken): PKCE helpers, authorize URL, code/refresh-token exchange and the token-holding class follow that
+project; client id, scope, audience and redirect URI are the ones of the washer app.
+
 Same situation as the Eolia integration: the app's Auth0 client only accepts its own custom
 redirect URI, so the browser step is done by hand once (config_flow.py) and everything after
 that runs on the refresh token.
