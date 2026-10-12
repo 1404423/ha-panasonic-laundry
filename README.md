@@ -126,8 +126,7 @@ cd tests && python3 -m unittest discover -v
 unit tests. `tools/probe.py` is a small stdlib-only script that reads the status and builds or sends the same requests from a
 terminal (needs a token file; read its header first). The API notes are in [docs/](docs/README.md).
 
-`ci/*.yaml` are the GitHub Actions workflows (HACS validation, hassfest, unit tests). Copy them to `.github/workflows/` to enable
-them (pushing workflow files needs a token with the `workflow` permission).
+`.github/workflows/` has the GitHub Actions workflows (HACS validation, hassfest, unit tests); they run on every push and daily.
 
 ## Acknowledgements
 
