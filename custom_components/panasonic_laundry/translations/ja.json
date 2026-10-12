@@ -1,0 +1,186 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Panasonic アカウントにログイン",
+        "description": "1. ブラウザの開発者ツール(Chrome は F12、Mac は Cmd+Option+I)の「Console」タブを開いた状態で、次のリンクを開きます: {authorize_url}\n2. Panasonic ID でログインします(「スマホで洗濯」アプリと同じアカウントです)。\n3. ログイン後、ページは真っ白のままです。Console に `Failed to launch 'auth0://...?code=...'` という行が出ます。想定どおりです。\n4. その行を丸ごと(または `auth0://...` のアドレスだけ)コピーして、下に貼ります。コードは 1 回限りで、すぐ切れます。ログインしたら、すぐ貼ってください。",
+        "data": {
+          "authorization_response": "貼り付けるアドレス(またはコード)"
+        }
+      },
+      "device": {
+        "title": "洗濯機を選ぶ",
+        "data": {
+          "appliance_id": "洗濯機"
+        }
+      },
+      "reauth_confirm": {
+        "title": "もう一度ログイン",
+        "description": "ログインの有効期限が切れました。\n\n1. ブラウザの開発者ツール(Chrome は F12、Mac は Cmd+Option+I)の「Console」タブを開いた状態で、次のリンクを開きます: {authorize_url}\n2. Panasonic ID でログインします(「スマホで洗濯」アプリと同じアカウントです)。\n3. ログイン後、ページは真っ白のままです。Console に `Failed to launch 'auth0://...?code=...'` という行が出ます。想定どおりです。\n4. その行を丸ごと(または `auth0://...` のアドレスだけ)コピーして、下に貼ります。コードは 1 回限りで、すぐ切れます。ログインしたら、すぐ貼ってください。",
+        "data": {
+          "authorization_response": "貼り付けるアドレス(またはコード)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "ログインに失敗しました。コードの有効時間は短いので、もう一度ログインして、すぐ貼ってください。",
+      "cannot_connect": "Panasonic のサービスに接続できませんでした。",
+      "no_devices": "このアカウントに、登録された洗濯機がありません。",
+      "state_mismatch": "このアドレスは、別のログイン用リンクのものです。この画面に出ているリンクで、ログインしてください。",
+      "wrong_account": "このアカウントは、設定済みの洗濯機の持ち主ではありません。"
+    },
+    "abort": {
+      "already_configured": "この洗濯機は、すでに登録されています。",
+      "reauth_successful": "ログインし直しました。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "状態",
+        "state": {
+          "off": "電源オフ",
+          "waiting": "待機中",
+          "running": "運転中",
+          "paused": "一時停止",
+          "done": "運転終了",
+          "error": "エラー"
+        }
+      },
+      "door": {
+        "name": "ドア",
+        "state": {
+          "open": "開",
+          "closed": "閉"
+        }
+      },
+      "course": {
+        "name": "コース"
+      },
+      "stage": {
+        "name": "工程"
+      },
+      "remaining": {
+        "name": "残り時間"
+      },
+      "reservation": {
+        "name": "予約",
+        "state": {
+          "off": "なし",
+          "reserved": "予約中"
+        }
+      },
+      "reservation_start_in": {
+        "name": "開始まで"
+      }
+    },
+    "select": {
+      "reservation_course": {
+        "name": "予約するコース"
+      }
+    },
+    "time": {
+      "reservation_finish_time": {
+        "name": "予約の終了時刻"
+      }
+    },
+    "button": {
+      "reserve": {
+        "name": "予約する"
+      },
+      "cancel_reservation": {
+        "name": "予約を取り消す"
+      },
+      "start": {
+        "name": "今すぐ開始"
+      }
+    }
+  },
+  "exceptions": {
+    "blocked_power_off": {
+      "message": "洗濯機の電源が入っていません。"
+    },
+    "blocked_fault": {
+      "message": "洗濯機が異常を報告しています。"
+    },
+    "blocked_not_waiting": {
+      "message": "洗濯機は、運転前の待機中ではありません。"
+    },
+    "blocked_door_open": {
+      "message": "ドアが閉まっていません。"
+    },
+    "blocked_remote_not_permitted": {
+      "message": "遠隔操作が許可されていません。洗濯機の「遠隔」ボタンを押して、ランプを点けてください。"
+    },
+    "already_reserved": {
+      "message": "すでに予約が入っています。先に取り消してください。"
+    },
+    "course_not_in_history": {
+      "message": "予約できるのは、洗濯機の履歴にあるコースだけです。"
+    },
+    "time_out_of_range": {
+      "message": "終了時刻は、いまから 10 分〜24 時間後の範囲で指定してください。"
+    },
+    "send_failed": {
+      "message": "洗濯機が命令を受け付けませんでした: {error}"
+    },
+    "reserve_not_confirmed": {
+      "message": "命令は送りましたが、洗濯機に予約が表示されません。洗濯機で確認してください。"
+    },
+    "cancel_not_confirmed": {
+      "message": "予約を取り消せませんでした。洗濯機の「取消」ボタンで取り消してください。"
+    },
+    "no_washer": {
+      "message": "洗濯機が登録されていません。"
+    },
+    "course_not_accepted": {
+      "message": "洗濯機が、このコースの予約を、受け付けませんでした。洗濯機の本体でこのコースを選んでから、もう一度予約してください。"
+    },
+    "start_while_reserved": {
+      "message": "予約が入っています。いま開始するなら、先に予約を取り消してください。"
+    },
+    "start_not_confirmed": {
+      "message": "開始の命令は送りましたが、洗濯機が運転中になりません。洗濯機で確認してください。"
+    }
+  },
+  "services": {
+    "reserve": {
+      "name": "運転を予約する",
+      "description": "洗濯機の履歴にあるコースを、指定した時刻に終わるように予約します(次にその時刻になるとき)。",
+      "fields": {
+        "entry_id": {
+          "name": "洗濯機",
+          "description": "洗濯機が複数あるときだけ指定します。"
+        },
+        "course": {
+          "name": "コース",
+          "description": "履歴にあるコースの名前またはコード。"
+        },
+        "finish_time": {
+          "name": "終了時刻",
+          "description": "運転を終わらせたい時刻。"
+        }
+      }
+    },
+    "cancel_reservation": {
+      "name": "予約を取り消す",
+      "description": "予約をオフにします。",
+      "fields": {
+        "entry_id": {
+          "name": "洗濯機",
+          "description": "洗濯機が複数あるときだけ指定します。"
+        }
+      }
+    },
+    "start": {
+      "name": "今すぐ開始",
+      "description": "洗濯機で選択中のコースを、いま開始します。遠隔ランプが点いている必要があります。",
+      "fields": {
+        "entry_id": {
+          "name": "洗濯機",
+          "description": "洗濯機が複数あるときだけ指定します。"
+        }
+      }
+    }
+  }
+}

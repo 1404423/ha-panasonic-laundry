@@ -1,0 +1,28 @@
+name: Bug report / new model
+description: Something does not work, or you want your model supported
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Washer model number
+      description: As shown in the "スマホで洗濯" app (e.g. NA-LX127CL-W)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Integration and Home Assistant version
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log lines (Settings → System → Logs, search "panasonic_laundry")
+      description: Remove tokens, codes and appliance ids before pasting.
+      render: text

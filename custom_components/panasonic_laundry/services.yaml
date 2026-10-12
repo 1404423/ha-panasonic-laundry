@@ -1,0 +1,31 @@
+reserve:
+  fields:
+    entry_id:
+      required: false
+      selector:
+        config_entry:
+          integration: panasonic_laundry
+    course:
+      required: true
+      example: "洗濯・乾燥 おまかせ"
+      selector:
+        text:
+    finish_time:
+      required: true
+      example: "07:00:00"
+      selector:
+        time:
+cancel_reservation:
+  fields:
+    entry_id:
+      required: false
+      selector:
+        config_entry:
+          integration: panasonic_laundry
+start:
+  fields:
+    entry_id:
+      required: false
+      selector:
+        config_entry:
+          integration: panasonic_laundry

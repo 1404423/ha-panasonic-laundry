@@ -1,0 +1,186 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Log in to your Panasonic account",
+        "description": "1. Open this link in a browser that has its developer tools open (Chrome/Edge: F12 or Cmd+Option+I, Console tab): {authorize_url}\n2. Log in with your Panasonic ID (the account used in the \"スマホで洗濯\" / Panasonic Smart Laundry app).\n3. After logging in the page stays blank and the console shows a line like `Failed to launch 'auth0://...?code=...'`. This is expected.\n4. Copy that whole console line (or just the `auth0://...` address) and paste it below. The code is single-use and expires quickly, so paste it right away.",
+        "data": {
+          "authorization_response": "Pasted address or code"
+        }
+      },
+      "device": {
+        "title": "Choose the washer",
+        "data": {
+          "appliance_id": "Washer"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Log in again",
+        "description": "The login expired. \n\n1. Open this link in a browser that has its developer tools open (Chrome/Edge: F12 or Cmd+Option+I, Console tab): {authorize_url}\n2. Log in with your Panasonic ID (the account used in the \"スマホで洗濯\" / Panasonic Smart Laundry app).\n3. After logging in the page stays blank and the console shows a line like `Failed to launch 'auth0://...?code=...'`. This is expected.\n4. Copy that whole console line (or just the `auth0://...` address) and paste it below. The code is single-use and expires quickly, so paste it right away.",
+        "data": {
+          "authorization_response": "Pasted address or code"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Login failed. The code expires quickly - log in again and paste it right away.",
+      "cannot_connect": "Could not reach the Panasonic service.",
+      "no_devices": "No washer is registered to this account.",
+      "state_mismatch": "This address comes from a different login link. Use the link shown in this dialog.",
+      "wrong_account": "This account does not own the washer that is set up here."
+    },
+    "abort": {
+      "already_configured": "This washer is already set up.",
+      "reauth_successful": "Logged in again."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state": {
+        "name": "State",
+        "state": {
+          "off": "Off",
+          "waiting": "Waiting",
+          "running": "Running",
+          "paused": "Paused",
+          "done": "Finished",
+          "error": "Error"
+        }
+      },
+      "door": {
+        "name": "Door",
+        "state": {
+          "open": "Open",
+          "closed": "Closed"
+        }
+      },
+      "course": {
+        "name": "Course"
+      },
+      "stage": {
+        "name": "Stage"
+      },
+      "remaining": {
+        "name": "Time remaining"
+      },
+      "reservation": {
+        "name": "Reservation",
+        "state": {
+          "off": "None",
+          "reserved": "Reserved"
+        }
+      },
+      "reservation_start_in": {
+        "name": "Starts in"
+      }
+    },
+    "select": {
+      "reservation_course": {
+        "name": "Reservation course"
+      }
+    },
+    "time": {
+      "reservation_finish_time": {
+        "name": "Reservation finish time"
+      }
+    },
+    "button": {
+      "reserve": {
+        "name": "Reserve"
+      },
+      "cancel_reservation": {
+        "name": "Cancel reservation"
+      },
+      "start": {
+        "name": "Start now"
+      }
+    }
+  },
+  "exceptions": {
+    "blocked_power_off": {
+      "message": "The washer is switched off."
+    },
+    "blocked_fault": {
+      "message": "The washer reports a fault."
+    },
+    "blocked_not_waiting": {
+      "message": "The washer is not waiting before a run."
+    },
+    "blocked_door_open": {
+      "message": "The door is not closed."
+    },
+    "blocked_remote_not_permitted": {
+      "message": "Remote operation is not permitted: press the 遠隔 button on the washer so that its lamp lights."
+    },
+    "already_reserved": {
+      "message": "A reservation is already set. Cancel it first."
+    },
+    "course_not_in_history": {
+      "message": "Only courses from the washer's recent history can be reserved."
+    },
+    "time_out_of_range": {
+      "message": "The finish time must be between 10 minutes and 24 hours from now."
+    },
+    "send_failed": {
+      "message": "The washer did not accept the command: {error}"
+    },
+    "reserve_not_confirmed": {
+      "message": "The command was sent but the washer does not show the reservation."
+    },
+    "cancel_not_confirmed": {
+      "message": "The reservation could not be cancelled. Press 取消 on the washer."
+    },
+    "no_washer": {
+      "message": "No Panasonic washer is set up."
+    },
+    "course_not_accepted": {
+      "message": "The washer did not accept this course through the cloud. Select the course on the washer itself, then reserve again."
+    },
+    "start_while_reserved": {
+      "message": "A reservation is set. Cancel it before starting now."
+    },
+    "start_not_confirmed": {
+      "message": "The start command was sent but the washer does not show a running state. Check the washer."
+    }
+  },
+  "services": {
+    "reserve": {
+      "name": "Reserve a run",
+      "description": "Reserve a course from the washer's history to be finished at a time of day (the next time the clock shows it).",
+      "fields": {
+        "entry_id": {
+          "name": "Washer",
+          "description": "Only needed with more than one washer."
+        },
+        "course": {
+          "name": "Course",
+          "description": "Name or code of a course from the history."
+        },
+        "finish_time": {
+          "name": "Finish time",
+          "description": "Time of day the run should be finished."
+        }
+      }
+    },
+    "cancel_reservation": {
+      "name": "Cancel the reservation",
+      "description": "Turn the reservation off.",
+      "fields": {
+        "entry_id": {
+          "name": "Washer",
+          "description": "Only needed with more than one washer."
+        }
+      }
+    },
+    "start": {
+      "name": "Start now",
+      "description": "Start the course that is selected on the washer. The 遠隔 lamp must be lit.",
+      "fields": {
+        "entry_id": {
+          "name": "Washer",
+          "description": "Only needed with more than one washer."
+        }
+      }
+    }
+  }
+}
