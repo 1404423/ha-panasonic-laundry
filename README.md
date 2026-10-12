@@ -141,6 +141,8 @@ them (pushing workflow files needs a token with the `workflow` permission).
   to read.
 * The comparison projects listed above were read for orientation only; no code from them is used.
 * The [Home Assistant developer documentation](https://developers.home-assistant.io/) for the integration structure.
+* **AI assistance**: this integration was written with the help of Claude (Anthropic, via Claude Code) under the author's direction
+  and testing on the author's own washer. [CLAUDE.md](CLAUDE.md) holds the working rules used for that.
 
 ## Disclaimer
 
