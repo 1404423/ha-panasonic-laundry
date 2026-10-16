@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.1 - 2026-10-16
+* Add a brand icon (`brand/icon.png`) as required for the HACS default list.
+
 ## 0.3.0 - 2026-10-12
 First public release.
 
