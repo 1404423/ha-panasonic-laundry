@@ -280,7 +280,8 @@ for f in files:
     for rx, label in PAT:
         for m in re.finditer(rx, text):
             line = text.count("\n", 0, m.start()) + 1
-            if "example" in text[max(0, m.start() - 40):m.end() + 40].lower() or "noreply" in m.group(0):
+            ctx = text[max(0, m.start() - 40):m.end() + 40].lower()
+            if "example" in ctx or "fake" in ctx or "noreply" in m.group(0):      # obviously fake test values are fine
                 continue
             add("WARN", "private-data", f"{f}:{line} {label}: {m.group(0)[:40]}")
 
