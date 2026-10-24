@@ -27,7 +27,8 @@
       "cannot_connect": "Could not reach the Panasonic service.",
       "no_devices": "No washer is registered to this account.",
       "state_mismatch": "This address comes from a different login link. Use the link shown in this dialog.",
-      "wrong_account": "This account does not own the washer that is set up here."
+      "wrong_account": "This account does not own the washer that is set up here.",
+      "unknown": "Unexpected error."
     },
     "abort": {
       "already_configured": "This washer is already set up.",
