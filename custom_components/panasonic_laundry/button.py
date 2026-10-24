@@ -15,6 +15,9 @@ from .entity import LaundryEntity
 from .reservation import next_occurrence
 
 
+PARALLEL_UPDATES = 1  # each press sends a command to the cloud: one at a time
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback) -> None:
     coordinator = entry.runtime_data
     async_add_entities([ReserveButton(coordinator, entry), CancelReservationButton(coordinator, entry), StartButton(coordinator, entry)])

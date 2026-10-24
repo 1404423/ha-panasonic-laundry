@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
+from datetime import time as dt_time  # NOT `time`: this package has a platform module time.py, and importing it rebinds the name `time` in this namespace
 from typing import Any
 
 import voluptuous as vol
@@ -88,7 +89,7 @@ class LaundryCoordinator(DataUpdateCoordinator[dict[str, str]]):
         self.appliance_id: str = entry.data[CONF_APPLIANCE_ID]
         # what the select / time entities and the "reserve" button use
         self.reservation_course: str | None = None
-        self.reservation_time: time = time(7, 0)
+        self.reservation_time: dt_time = dt_time(7, 0)
         self._lock = asyncio.Lock()
 
     async def _async_update_data(self) -> dict[str, str]:

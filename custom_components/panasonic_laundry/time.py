@@ -14,6 +14,9 @@ from . import LaundryCoordinator
 from .entity import LaundryEntity
 
 
+PARALLEL_UPDATES = 0  # local choice, no cloud call
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback) -> None:
     async_add_entities([ReservationFinishTime(entry.runtime_data, entry)])
 

@@ -12,3 +12,7 @@ This repository is developed with AI assistance (Claude Code). These are the rul
   Assistant imports so they can be tested alone.
 * **What is verified** is stated in `docs/findings.md` and the README; keep those honest when behaviour changes.
 * Commits use the GitHub noreply address; do not publish a private e-mail address.
+* **Before every release** run the steps in `docs/RELEASE-CHECKLIST.md` (audit, unit tests, tests inside a real Home Assistant, minimum
+  Home Assistant version). Green CI (hassfest, HACS validation) does not prove the integration behaves: it found neither the per-request
+  `ZoneInfo(...)` on the event loop nor the `time` name that a platform module `time.py` silently replaced in `__init__.py`.
+* **Outward-facing steps** (push, release, a comment on a pull request) only after the owner said yes for that action.

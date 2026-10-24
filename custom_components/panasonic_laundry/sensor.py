@@ -82,6 +82,9 @@ SENSORS: tuple[LaundrySensorDescription, ...] = (
 )
 
 
+PARALLEL_UPDATES = 0  # read-only entities fed by the coordinator
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback) -> None:
     coordinator = entry.runtime_data
     async_add_entities(LaundrySensor(coordinator, entry, d) for d in SENSORS)

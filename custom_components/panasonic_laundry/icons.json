@@ -1,0 +1,24 @@
+{
+  "entity": {
+    "sensor": {
+      "state": { "default": "mdi:washing-machine" },
+      "door": { "default": "mdi:door" },
+      "course": { "default": "mdi:format-list-bulleted" },
+      "stage": { "default": "mdi:progress-clock" },
+      "remaining": { "default": "mdi:timer-sand" },
+      "reservation": { "default": "mdi:calendar-clock" },
+      "reservation_start_in": { "default": "mdi:timer-outline" }
+    },
+    "select": {
+      "reservation_course": { "default": "mdi:playlist-check" }
+    },
+    "time": {
+      "reservation_finish_time": { "default": "mdi:clock-end" }
+    },
+    "button": {
+      "reserve": { "default": "mdi:calendar-plus" },
+      "cancel_reservation": { "default": "mdi:calendar-remove" },
+      "start": { "default": "mdi:play-circle" }
+    }
+  }
+}

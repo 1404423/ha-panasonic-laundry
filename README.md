@@ -68,7 +68,7 @@ from the app's code but have not been tried.
 ## Requirements
 
 * A Panasonic drum washer-dryer registered in the **スマホで洗濯** app (Club Panasonic account, Japan), with Wi-Fi on.
-* Home Assistant 2025.1 or newer.
+* Home Assistant 2025.3 or newer.
 * A desktop browser (for the one-time login).
 
 ## Install
@@ -97,6 +97,13 @@ The code is single-use and expires within a minute or so. Your password is never
 * *"This address comes from a different login link"*: use the link shown in the open dialog, not an older one.
 * *"Login failed"*: the code expired or was already used; log in again and paste right away.
 * *No washer listed*: register it in the official app first (the app's "My家電" list).
+
+## Remove
+
+*Settings → Devices & services → Panasonic Washer-Dryer → ⋮ → Delete* removes the washer, its entities and the stored login tokens
+from Home Assistant. If you also want the code gone: in HACS open the repository → ⋮ → *Remove*, or delete
+`<config>/custom_components/panasonic_laundry` (manual install), then restart Home Assistant. The login at Panasonic stays valid until
+you sign out of it in the app; change your Panasonic password if you want the old tokens to stop working.
 
 ## Limitations
 
@@ -128,6 +135,10 @@ terminal (needs a token file; read its header first). The API notes are in [docs
 
 `.github/workflows/` has the GitHub Actions workflows (HACS validation, hassfest, unit tests); they run on every push and daily.
 
+
+Tests: `cd tests && python3 -m unittest discover` (pure modules, no Home Assistant) and, inside a real Home Assistant,
+`pip install pytest-homeassistant-custom-component && pytest tests/ha`. Before a release follow [docs/RELEASE-CHECKLIST.md](docs/RELEASE-CHECKLIST.md).
+
 ## Acknowledgements
 
 * **[specializedken/panasonic-eolia](https://github.com/specializedken/panasonic-eolia)** (MIT): the Auth0 PKCE login with the
@@ -158,7 +169,11 @@ The code is released under the [MIT License](LICENSE) (with the notice of the pr
 
 「スマホで洗濯」アプリに登録した、パナソニックのドラム式洗濯乾燥機の状態(状態・ドア・コース・工程・残り時間)を、
 Home Assistant のセンサーとして読み取ります。**非公式**で、パナソニックとは無関係です。公式アプリと同じ通信を使うため、
-仕様変更や規約に注意してください(自己責任)。運転の開始・予約には、対応していません。
+仕様変更や規約に注意してください(自己責任)。終了時刻の予約(洗濯機の履歴のコースから選択)、予約の取り消し、「今すぐ開始」に対応しています
+(開始は、洗濯機で選択中のコースを動かします)。
 
 ログインは、手動の手順が 1 回必要です(上の「Set up」を参照)。開発者ツールの Console に出る
 `Failed to launch 'auth0://...?code=...'` の行を、丸ごと貼ってください。パスワードは、HA には保存されません。
+
+削除するときは、*設定 → デバイスとサービス → Panasonic Washer-Dryer → ⋮ → 削除* です。洗濯機、エンティティ、保存したログインのトークンが、
+HA から消えます。コードも消す場合は、HACS で *Remove*(手動なら `custom_components/panasonic_laundry` を削除)して、HA を再起動してください。
