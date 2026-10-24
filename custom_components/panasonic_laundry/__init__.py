@@ -10,7 +10,7 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
-from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError, ServiceValidationError
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError, HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
@@ -20,6 +20,7 @@ from homeassistant.util import dt as dt_util
 from .api import LaundryApi, LaundryApiError
 from .auth import LaundryAuth, LaundryAuthError
 from .const import (
+    API_TIMEZONE,
     COURSES,
     CONF_ACCESS_TOKEN,
     CONF_APPLIANCE_ID,
@@ -249,7 +250,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         expires_at=entry.data[CONF_EXPIRES_AT],
         on_tokens_updated=_store_tokens,
     )
-    coordinator = LaundryCoordinator(hass, entry, LaundryApi(async_get_clientsession(hass), auth))
+    time_zone = await dt_util.async_get_time_zone(API_TIMEZONE)         # loaded in the executor, once, not per request
+    if time_zone is None:
+        raise ConfigEntryError(f"Time zone data for {API_TIMEZONE} is not available")
+    coordinator = LaundryCoordinator(hass, entry, LaundryApi(async_get_clientsession(hass), auth, time_zone))
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)

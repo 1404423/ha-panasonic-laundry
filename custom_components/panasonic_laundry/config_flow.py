@@ -14,6 +14,7 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.util import dt as dt_util
 
 from .api import LaundryApi, LaundryApiError
 from .auth import (
@@ -25,7 +26,7 @@ from .auth import (
     generate_state,
     token_data_to_entry_data,
 )
-from .const import CONF_APPLIANCE_ID, CONF_NICKNAME, DOMAIN
+from .const import API_TIMEZONE, CONF_APPLIANCE_ID, CONF_NICKNAME, DOMAIN
 from .util import extract_code, extract_state
 
 LOGIN_FIELD = "authorization_response"
@@ -60,7 +61,10 @@ class LaundryConfigFlow(ConfigFlow, domain=DOMAIN):
                 refresh_token=self._tokens["refresh_token"],
                 expires_at=self._tokens["expires_at"],
             )
-            self._devices = await LaundryApi(session, auth).async_get_devices()
+            time_zone = await dt_util.async_get_time_zone(API_TIMEZONE)
+            if time_zone is None:
+                return "unknown"
+            self._devices = await LaundryApi(session, auth, time_zone).async_get_devices()
         except LaundryAuthError:
             return "invalid_auth"
         except LaundryApiError:

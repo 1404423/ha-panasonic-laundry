@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, tzinfo
 from typing import Any
-from zoneinfo import ZoneInfo
 
 from aiohttp import ClientError, ClientSession
 
 from .auth import LaundryAuth, LaundryAuthError
-from .const import API_BASE_URL, API_TIMESTAMP_FORMAT, API_TIMEZONE
+from .const import API_BASE_URL, API_TIMESTAMP_FORMAT
 
 CMD_TYPE_SET = "02"
 PROTOCOL = "echonetlite"
@@ -29,9 +28,11 @@ class LaundryApiError(Exception):
 
 
 class LaundryApi:
-    def __init__(self, session: ClientSession, auth: LaundryAuth) -> None:
+    def __init__(self, session: ClientSession, auth: LaundryAuth, time_zone: tzinfo) -> None:
+        """time_zone is the API's zone (const.API_TIMEZONE), resolved once by the caller with `await dt_util.async_get_time_zone(...)`: building a ZoneInfo reads the tz database from disk, which must not happen on the event loop for every request."""
         self._session = session
         self._auth = auth
+        self._time_zone = time_zone
 
     async def _request(
         self,
@@ -46,7 +47,7 @@ class LaundryApi:
         all_headers = {
             "Authorization": f"Bearer {token}",
             "Cookie": f"atkn={token}",
-            "X-Timestamp": datetime.now(ZoneInfo(API_TIMEZONE)).strftime(API_TIMESTAMP_FORMAT),
+            "X-Timestamp": datetime.now(self._time_zone).strftime(API_TIMESTAMP_FORMAT),
             "Content-Type": "application/json;charset=UTF-8",
             "Accept": "application/json",
             **(headers or {}),
