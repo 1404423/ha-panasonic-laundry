@@ -38,7 +38,7 @@ seconds later worked; `cmd_result false` with HTTP 200 when the washer refuses a
 | `0080` | operating state | `30` on, `31` off |
 | `0088` | fault | `41` fault, `42` none |
 | `00B0` | door | `41` open, `42` closed |
-| `00B2` | start/stop (write) | `41` start, `42` pause, `43` stop (*not verified*) |
+| `00B2` | start/stop (write) | `41` start (*verified 2026-10-25*), `42` pause, `43` stop (*not verified*) |
 | `00D0` | course | code, e.g. `21` 洗濯・乾燥 おまかせ, `61` 洗濯 おまかせ, `A1` 乾燥 おまかせ, `BF` 乾燥 槽乾燥 (table in `const.py`) |
 | `00E2` | stage / transition state | `41` washing, `42` rinsing, `43` spinning, `52` drying, `61` waiting before a run, `45/51/53/54/EF` finished kinds |
 | `0121` | driving situation (finer than `00E2`) | `00` waiting, `01` washing, `03` rinsing, `05` spinning, `06` drying, ... |
@@ -56,7 +56,27 @@ the course that was already selected on the washer; `A1` (乾燥 おまかせ) a
 (`cmd_result false`, nothing changed) - whether that is because of the course type or because the cloud refuses course
 changes is not known. Cancel: `0090 = 42` (retry on `L3E11-018-1302`). Needs `0100 = 01`, door closed, washer waiting.
 
-## Start now (*not verified on a real run*)
+## Start now (*verified on a real run, 2026-10-25*)
 
 `00B2 = 41` for the course selected on the washer, with the same preconditions. The official app sends the new course together with
 the start; a course change on its own is refused.
+
+Real run on NA-LX127CL-W, course 洗濯 おまかせ (washing only), drum empty, door closed, 遠隔 lamp lit, started with the *Start now* button
+in Home Assistant (integration 0.3.3). The washer accepted the command (no error; the integration reads the state back and would have
+raised `start_not_confirmed`). Status as recorded by Home Assistant (local time, polled every 60 s):
+
+| Time | Event |
+|---|---|
+| 10:46:17 | door closed |
+| 10:49:22 | *Start now* pressed |
+| 10:49:31 | state `running`, stage 洗い中, remaining 30 min |
+| 11:04:29 | stage すすぎ中 |
+| 11:15:29 | stage 脱水中, remaining 7 min |
+| 11:21:29 | stage 布ほぐし中, remaining 1 min |
+| 11:22:29 | stage エコナビ点灯中, state `done` (the washer showed "finished") |
+| 11:23:30 | state `off`: opening the door after a finished run makes the washer switch itself off |
+| 11:24:30 | state `waiting` again |
+
+The run took about 33 minutes. Not covered: other courses or models, pause/stop commands, and what happens when the door is opened during a run.
+Observation: the door sensor stayed `closed` in the record although the door was opened after the run; the state is only polled once a minute and
+the washer is switched off at that moment, so a door opening after a finished run may not show up.

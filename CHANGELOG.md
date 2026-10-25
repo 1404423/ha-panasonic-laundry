@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4 - 2026-10-25
+* *Start now* (button and service `start`) is verified on a real run: NA-LX127CL-W, course 洗濯 おまかせ, started from Home Assistant, ran about 33 minutes
+  through all stages and finished. The record is in `docs/findings.md`; README and limitations updated. No code change.
+
 ## 0.3.3 - 2026-10-24
 * Review fix: the API time zone is resolved once during setup (`dt_util.async_get_time_zone`) and kept on the API object, instead of building
   `ZoneInfo(...)` (a disk read on the event loop) for every request. The config flow does the same; a missing tz database now gives an

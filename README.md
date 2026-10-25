@@ -58,7 +58,8 @@ to start. It is sent as the official app does it (finish time + timer on + cours
 * **Start now** starts the course that is selected on the washer (the official app's start without a new course). It uses the
   same checks (switched on, waiting, door closed, no fault, 遠隔 lamp lit) and is refused while a reservation is set. A person has
   to load the drum and close the door; the 遠隔 lamp is the physical safety gate. There is no stop button (stop it on the washer).
-  The start command was built from the app's code (`00B2` = `41`) and **has not been tested on a real run**.
+  The start command (`00B2` = `41`) was **tested on a real run on 2026-10-25** (NA-LX127CL-W, course 洗濯 おまかせ, drum empty): the washer
+  accepted it, ran through washing, rinsing, spinning and fluffing, and finished after about 33 minutes (record: [docs/findings.md](docs/findings.md)).
 * Changing a course through the cloud on its own is refused by the washer; the course is only sent together with a reservation.
 
 Tested on the real machine: a reservation with the course that was already selected on the washer (sent, read back, cancelled).
@@ -111,7 +112,7 @@ you sign out of it in the app; change your Panasonic password if you want the ol
   NA-VG, NA-VX ...) may work; please open an issue with the model number.
 * Reservations work for the course that is selected on the washer. Reserving another course through the cloud, including a
   drying-only course, was refused by the washer (see [docs/findings.md](docs/findings.md)).
-* **Start now** has not been tested on a real run. There is no stop button; stop the washer on its panel.
+* **Start now** was tested on one run of one course only (see [docs/findings.md](docs/findings.md)). There is no stop button; stop the washer on its panel.
 * The washer must be switched on, waiting, with the door closed and the **遠隔 (remote)** lamp lit for any command.
 * The status is polled every 60 seconds; the cloud sometimes answers "communication with the washer failed" once.
 * The login needs a desktop browser once (and again when Panasonic invalidates the refresh token).
