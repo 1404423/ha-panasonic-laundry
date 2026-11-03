@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.5 - 2026-11-03
+* Review fix: the HACS workflow no longer passes `ignore: brands` to `hacs/action`; the brands check runs on `brand/icon.png`. No code change.
+
 ## 0.3.4 - 2026-10-25
 * *Start now* (button and service `start`) is verified on a real run: NA-LX127CL-W, course 洗濯 おまかせ, started from Home Assistant, ran about 33 minutes
   through all stages and finished. The record is in `docs/findings.md`; README and limitations updated. No code change.
