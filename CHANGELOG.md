@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.6 - 2026-11-04
+* Fix: after a failed token refresh (seen once as Auth0 `Global rate limit exceeded`) the integration asked Auth0 again on every 60 s poll, which
+  keeps a rate-limited login rate-limited. Failed refreshes now back off 60, 120, 240 ... s (at most 15 min) without calling Auth0; a success resets it.
+  `invalid_grant` still goes straight to re-authentication.
+
 ## 0.3.5 - 2026-11-03
 * Review fix: the HACS workflow no longer passes `ignore: brands` to `hacs/action`; the brands check runs on `brand/icon.png`. No code change.
 

@@ -34,6 +34,7 @@ from .const import (
     CONF_REFRESH_TOKEN,
     TOKEN_REFRESH_MARGIN_SECONDS,
 )
+from .util import refresh_backoff_seconds
 
 
 class LaundryAuthError(Exception):
@@ -129,6 +130,8 @@ class LaundryAuth:
         self._expires_at = expires_at
         self._on_tokens_updated = on_tokens_updated
         self._lock = asyncio.Lock()
+        self._refresh_failures = 0
+        self._retry_not_before = 0.0
 
     async def async_get_access_token(self) -> str:
         async with self._lock:
@@ -142,9 +145,21 @@ class LaundryAuth:
             return self._access_token
 
     async def _refresh(self) -> None:
-        data = token_data_to_entry_data(
-            await async_exchange_refresh_token(self._session, refresh_token=self._refresh_token)
-        )
+        wait = self._retry_not_before - time.monotonic()
+        if wait > 0:
+            # a refresh failed a moment ago (e.g. Auth0 "Global rate limit exceeded"): do not ask again every poll
+            raise LaundryAuthError(f"Token refresh paused for another {int(wait)} s after earlier failures")
+        try:
+            data = token_data_to_entry_data(
+                await async_exchange_refresh_token(self._session, refresh_token=self._refresh_token)
+            )
+        except LaundryAuthError as err:
+            if not err.invalid_grant:
+                self._refresh_failures += 1
+                self._retry_not_before = time.monotonic() + refresh_backoff_seconds(self._refresh_failures)
+            raise
+        self._refresh_failures = 0
+        self._retry_not_before = 0.0
         self._access_token = data[CONF_ACCESS_TOKEN]
         if data[CONF_REFRESH_TOKEN]:
             self._refresh_token = data[CONF_REFRESH_TOKEN]

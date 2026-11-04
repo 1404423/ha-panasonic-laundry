@@ -28,5 +28,16 @@ class ExtractTests(unittest.TestCase):
         self.assertIsNone(util.extract_state(CODE))
 
 
+
+class BackoffTests(unittest.TestCase):
+    def test_no_failures_no_wait(self):
+        self.assertEqual(util.refresh_backoff_seconds(0), 0)
+
+    def test_doubles_then_caps(self):
+        self.assertEqual([util.refresh_backoff_seconds(n) for n in (1, 2, 3, 4)], [60, 120, 240, 480])
+        self.assertEqual(util.refresh_backoff_seconds(5), 900)
+        self.assertEqual(util.refresh_backoff_seconds(50), 900)
+
+
 if __name__ == "__main__":
     unittest.main()

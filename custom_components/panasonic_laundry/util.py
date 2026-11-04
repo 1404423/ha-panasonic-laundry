@@ -33,3 +33,13 @@ def extract_state(text: str) -> str | None:
     """Return the `state` value of a pasted redirect URL, if there is one."""
     match = _STATE_RE.search(_callback_part(text))
     return match.group(1) if match else None
+
+
+def refresh_backoff_seconds(failures: int, *, base: int = 60, cap: int = 900) -> int:
+    """How long to leave Auth0 alone after `failures` failed token refreshes in a row (0 -> no wait; 60, 120, 240 ... s, at most `cap`).
+
+    Without it every poll (60 s) repeats the refresh, which keeps a rate-limited login rate-limited.
+    """
+    if failures <= 0:
+        return 0
+    return min(cap, base * 2 ** (failures - 1))
